@@ -33,11 +33,8 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Logout logic would go here
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
     }
 
-    public function user(Request $request)
-    {
-        return $request->user();
-    }
 }
