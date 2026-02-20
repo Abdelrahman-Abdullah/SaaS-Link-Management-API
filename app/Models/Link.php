@@ -10,7 +10,7 @@ class Link extends Model
     protected $fillable = [
         'user_id',
         'original_url',
-        'short_link',
+        'short_code',
         'custom_alias',
         'title',
         'expires_at',
