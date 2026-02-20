@@ -13,10 +13,10 @@ class ShortLinkGeneratorController extends Controller
         $shortLink = url('/s/' . $randomString);
         auth()->user()->links()->create([
             'original_url' => $request->input('original_url'),
-            'short_link' => $shortLink,
+            'short_code' => $randomString,
             'custom_alias' => $request->input('custom_alias'),
             'title' => $request->input('title'),
         ]);
-        return response()->json(['short_link' => $shortLink]);
+        return response()->json(['short_url' => $shortLink], 201);
     }
 }
