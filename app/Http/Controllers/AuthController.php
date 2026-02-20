@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AuthRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    public function register(AuthRequest $request)
+    public function register(RegisterRequest $request)
     {
         User::create($request->validated());
         return response()->json(['message' => 'User registered successfully'], 201);
