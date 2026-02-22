@@ -3,9 +3,12 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Helpers\ApiResponseHelper;
 class ShortLikeGenerateRequest extends FormRequest
 {
+    use ApiResponseHelper;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -27,4 +30,16 @@ class ShortLikeGenerateRequest extends FormRequest
             'title' => 'nullable|string|max:255',
         ];
     }
+    protected function failedValidation(Validator $validator)
+    {
+        $response = $this->apiResponse(
+            data: $validator->errors()->toArray(),
+            message: 'Validation failed',
+            status: 'error',
+            code: 422
+        );
+
+        throw new HttpResponseException($response);
+    }
+
 }

@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ShortLikeGenerateRequest;
 use App\Http\Resources\ShortLinkResource;
 use App\Models\Link;
+use App\Helpers\ApiResponseHelper;
 
 class ShortLinkController extends Controller
 {
+    use ApiResponseHelper;
     public function index()
     {
         $links = auth()->user()->links()
@@ -22,20 +24,29 @@ class ShortLinkController extends Controller
     }
     public function store(ShortLikeGenerateRequest $request)
     {
-        $validated = $request->validated();
-        $generatingResult = $this->generate();
+        try {
+            $validated = $request->validated();
+            $generatingResult = $this->generate();
 
-        $link = auth()->user()->links()->create([
-            'original_url' => $validated['original_url'],
-            'short_code' => $generatingResult['short_code'],
-            'custom_alias' => $validated['custom_alias'] ?? null,
-            'title' => $validated['title'] ?? null,
-        ]);
+            $link = auth()->user()->links()->create([
+                'original_url' => $validated['original_url'],
+                'short_code' => $generatingResult['short_code'],
+                'custom_alias' => $validated['custom_alias'] ?? null,
+                'title' => $validated['title'] ?? null,
+            ]);
 
-        return response()->json([
-            'short_url' => $generatingResult['short_url'],
-            'id' => $link->id
-        ], 201);
+          return $this->apiResponse([
+                'short_url' => $generatingResult['short_url'],
+                'id' => $link->id
+            ], 'Short link created successfully', code: 201);
+
+        }catch (\Exception $e)
+        {
+            return $this->apiResponse( message: 'An error occurred while creating the short link',
+                status: 'error',
+                code: $e->getCode() ?: 500);
+        }
+
     }
 
     public function destroy($id)
