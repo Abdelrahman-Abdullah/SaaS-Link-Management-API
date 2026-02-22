@@ -47,7 +47,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $token = $user->createToken('auth_token_'.$user->id)->plainTextToken;
             return $this->apiResponse(
-                data: ['access_token' => $token, 'token_type' => 'Bearer'],
+                data: [ 'user' => $user->only('name', 'email'),'access_token' => $token, 'token_type' => 'Bearer'],
                 message: 'Login successful',
             );
 
