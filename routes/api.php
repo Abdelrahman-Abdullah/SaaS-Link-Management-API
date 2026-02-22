@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\ShortLinkController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,3 +19,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete/{id}', 'destroy');
     });
 });
+
+Route::get('/{code}', [RedirectController::class, 'redirect']);
