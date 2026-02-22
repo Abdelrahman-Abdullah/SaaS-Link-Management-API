@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Click;
 use App\Models\Link;
-use Illuminate\Http\Request;
 use App\Helpers\ApiResponseHelper;
 use Jenssegers\Agent\Agent;
-use function Laravel\Prompts\error;
 
 class RedirectController extends Controller
 {
@@ -15,12 +13,12 @@ class RedirectController extends Controller
 
     public function redirect($code)
     {
-        $link = Link::where('short_code', $code)->firstOrFail();
 
-        if (!$link) {
-            return $this->apiResponse(message: 'Link not found', status: 'error', code: 404);
-        }
+            $link = Link::where('short_code', $code)->first();
 
+            if (!$link) {
+                return $this->apiResponse(message: 'Link not found', status: 'error', code: 404);
+            }
         try {
             $this->recordClick($link);
             $link->increment('clicks_count');
