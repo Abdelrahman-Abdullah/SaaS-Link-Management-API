@@ -15,11 +15,10 @@ class ShortLinkController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return response()->json([
-            'message' => 'Links retrieved successfully',
-            'status' => 'success',
-            'data' => ShortLinkResource::collection($links)
-        ]);
+        if (!$links->isEmpty()) {
+           return $this->apiResponse([], 'No links found for the user',code: 204);
+        }
+        return $this->apiResponse(ShortLinkResource::collection($links), 'Links retrieved successfully');
     }
     public function store(ShortLikeGenerateRequest $request)
     {
