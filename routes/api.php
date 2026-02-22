@@ -22,5 +22,9 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/{code}', [RedirectController::class, 'redirect']);
+Route::controller(ForgetPasswordController::class)->group(function () {
+    Route::post('/forgot-password', 'store');
+    Route::post('/forgot-password/verify', 'reset');
+    Route::post('/reset-password', 'update');
 
-Route::post('/forget-password', [ForgetPasswordController::class, 'store']);
+});
