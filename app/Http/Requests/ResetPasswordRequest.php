@@ -5,7 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Helpers\ApiResponseHelper;
-class VerifyResetCodeRequest extends FormRequest
+use Illuminate\Http\Exceptions\HttpResponseException;
+
+class ResetPasswordRequest extends FormRequest
 {
     use ApiResponseHelper;
     /**
@@ -24,16 +26,20 @@ class VerifyResetCodeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'code' => 'required|string|min:6|max:6',
+            'verify_token' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'same:password',
         ];
     }
 
     public function failedValidation(Validator $validator)
     {
-        return $this->apiResponse(
-            message: $validator->errors()->toArray() ?? 'Invalid input data.',
-            status: 422,
-        );
+           $response = $this->apiResponse(
+                message: $validator->errors()->toArray() ?? 'Validation failed',
+                status: 422,
+            );
+
+            throw new HttpResponseException($response);
     }
+
 }

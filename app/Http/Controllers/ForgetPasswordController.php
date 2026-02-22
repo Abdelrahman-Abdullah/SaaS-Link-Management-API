@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ForgetPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\VerifyResetCodeRequest;
 use App\Mail\ResetPasswordMailer;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -30,7 +32,7 @@ class ForgetPasswordController extends Controller
 
             $this->saveResetCode($email, $code);
 
-            Mail::to($email)->send(new ResetPasswordMailer($code));
+            Mail::to('sociala988@gmail.com')->send(new ResetPasswordMailer($code));
 
             return $this->apiResponse(
                 message: 'Password reset code sent to your email.',
@@ -84,6 +86,55 @@ class ForgetPasswordController extends Controller
 
     }
 
+    public function update(ResetPasswordRequest $request)
+    {
+        try {
+
+            $password = $request->validated('password');
+            $verifyToken = $request->validated('verify_token');
+
+            $record = DB::table('password_reset_tokens')
+                ->where('token', $verifyToken)
+                ->first();
+
+            if (!$record) {
+                return $this->apiResponse(
+                    message: 'Invalid or expired verification token.',
+                    status: 422,
+                );
+            }
+            if ($this->isExpired($record->created_at)) {
+                $this->deleteResetCode($record->email);
+
+                return $this->apiResponse(
+                    message: 'Your session has expired. Please restart the reset process.',
+                    status: 422,
+                );
+            }
+            User::where('email', $record->email)
+                ->update(['password' => bcrypt($password)]);
+
+            $this->deleteResetCode($record->email);
+            // Invalidate all existing tokens for the user to force re-login
+            $user = User::where('email', $record->email)->first();
+            $user->tokens()->delete();
+
+            return $this->apiResponse(
+                message: 'Password reset successfully. You can now log in with your new password.',
+                status: 200,
+            );
+        } catch (\Exception $e){
+            Log::error('Password reset failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return $this->apiResponse(
+                message: 'Failed to reset password. Please try again later.',
+                status: 500,
+            );
+        }
+    }
+
 // ─── Private helpers ──────────────────────────────────────────────────────────
 
     private function hasRecentResetCode(string $email): bool
@@ -111,7 +162,7 @@ class ForgetPasswordController extends Controller
             ]
         );
     }
-    private function getResetCode(string $email): ?string
+    private function getResetCode(string $email): ?object
     {
         return DB::table('password_reset_tokens')
             ->select('token', 'created_at')
