@@ -23,6 +23,7 @@ class RedirectController extends Controller
 
         try {
             $this->recordClick($link);
+            $link->increment('clicks_count');
 
             return $this->apiResponse(
                 data: $link->original_url,
