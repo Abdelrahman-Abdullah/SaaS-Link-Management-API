@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ShortLikeGenerateRequest;
+use App\Http\Resources\ShortLinkResource;
 use App\Models\Link;
 
 class ShortLinkController extends Controller
@@ -14,7 +15,11 @@ class ShortLinkController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return response()->json($links);
+        return response()->json([
+            'message' => 'Links retrieved successfully',
+            'status' => 'success',
+            'data' => ShortLinkResource::collection($links)
+        ]);
     }
     public function store(ShortLikeGenerateRequest $request)
     {
