@@ -7,40 +7,84 @@ use App\Http\Requests\SessionRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\ApiResponseHelper;
 
 class AuthController extends Controller
 {
-    /**
-     * Handle user registration
-     * @response  {
-     *  "message": "User registered successfully"
-     * }
-     */
+    use ApiResponseHelper;
+
     public function register(RegisterRequest $request)
     {
-        User::create($request->validated());
-        return response()->json(['message' => 'User registered successfully'], 201);
+        try {
+            User::create($request->validated());
+            return $this->apiResponse(
+                message: 'User registered successfully',
+                status: 201
+            );
+
+        } catch (\Exception $e) {
+            return $this->apiResponse(
+                data: $e->getMessage(),
+                message: 'User registration failed',
+                status: $e->getCode() ?: 500
+            );
+        }
 
     }
 
     public function login(SessionRequest $request)
     {
-    
-        // Tring To login with user credentials and return token if successful
+        try {
+            // Trying To login with user credentials and return token if successful
             $credentials = $request->only('email', 'password');
-            if (Auth::attempt($credentials)) {
-                $user = Auth::user();
-                $token = $user->createToken('auth_token_'.$user->id)->plainTextToken;
-                return response()->json(['access_token' => $token, 'token_type' => 'Bearer']);
+            if (!Auth::attempt($credentials)) {
+                return $this->apiResponse(
+                    message: 'Invalid email or password',
+                    status: 'error',
+                    code: 401
+                );
             }
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            $user = Auth::user();
+            $token = $user->createToken('auth_token_'.$user->id)->plainTextToken;
+            return $this->apiResponse(
+                data: ['access_token' => $token, 'token_type' => 'Bearer'],
+                message: 'Login successful',
+            );
+
+        } catch (\Exception $e) {
+
+            return $this->apiResponse(
+                data: $e->getMessage(),
+                message: 'something went wrong during login',
+                status: $e->getCode() ?: 500
+            );
+        }
+
 
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logged out successfully']);
+        try {
+            if (!$request->user() || !$request->user()->currentAccessToken()) {
+                return $this->apiResponse(
+                    message: 'No authenticated user found',
+                    status: 'error',
+                    code: 401
+                );
+            }
+            $request->user()->currentAccessToken()->delete();
+            return $this->apiResponse(
+                message: 'Logout successful',
+            );
+        } catch (\Exception $e) {
+            return $this->apiResponse(
+                data: $e->getMessage(),
+                message: 'something went wrong during logout',
+                status: $e->getCode() ?: 500
+            );
+        }
+
     }
 
 }

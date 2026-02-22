@@ -20,7 +20,7 @@ class ShortLinkResource extends JsonResource
             'short_code' => $this->short_code,
             'title' => $this->title,
             'custom_alias' => $this->custom_alias,
-            'clicks' => $this->clicks
+            'clicks_count' => $this->clicks_count
         ];
     }
 }

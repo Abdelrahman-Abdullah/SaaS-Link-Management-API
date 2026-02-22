@@ -13,12 +13,14 @@ class ShortLinkController extends Controller
     public function index()
     {
         $links = auth()->user()->links()
-            ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','clicks')
+            ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','clicks_count')
             ->orderByDesc('created_at')
             ->get();
 
-        if (!$links->isEmpty()) {
-           return $this->apiResponse([], 'No links found for the user',code: 204);
+        if ($links->isEmpty()) {
+           return $this->apiResponse(
+               message: 'No links found for the user',
+               code: 404);
         }
         return $this->apiResponse(ShortLinkResource::collection($links), 'Links retrieved successfully');
     }
@@ -35,10 +37,11 @@ class ShortLinkController extends Controller
                 'title' => $validated['title'] ?? null,
             ]);
 
-          return $this->apiResponse([
-                'short_url' => $generatingResult['short_url'],
-                'id' => $link->id
-            ], 'Short link created successfully', code: 201);
+          return $this->apiResponse(
+              data: new ShortLinkResource($link),
+              message: 'Short link created successfully',
+              code: 201
+          );
 
         }catch (\Exception $e)
         {

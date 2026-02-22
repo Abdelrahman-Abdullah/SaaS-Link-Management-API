@@ -26,7 +26,7 @@ class ShortLikeGenerateRequest extends FormRequest
     {
         return [
             'original_url' => 'required|url',
-            'custom_alias' => 'nullable|string|alpha_dash|unique:short_links,custom_alias',
+            'custom_alias' => 'nullable|string|alpha_dash|unique:links,custom_alias',
             'title' => 'nullable|string|max:255',
         ];
     }

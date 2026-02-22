@@ -2,10 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\ApiResponseHelper;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RegisterRequest extends FormRequest
 {
+    use ApiResponseHelper;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,5 +30,16 @@ class RegisterRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $response = $this->apiResponse(
+            data: $validator->errors()->toArray(),
+            message: 'Validation Failed',
+            status: 422
+        );
+
+        throw  new HttpResponseException($response);
     }
 }
