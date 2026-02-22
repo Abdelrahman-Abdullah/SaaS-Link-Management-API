@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    /**
+     * Handle user registration
+     * @response  {
+     *  "message": "User registered successfully"
+     * }
+     */
     public function register(RegisterRequest $request)
     {
         User::create($request->validated());
