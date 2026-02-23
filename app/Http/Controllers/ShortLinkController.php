@@ -13,6 +13,7 @@ class ShortLinkController extends Controller
     public function index()
     {
         $links = auth()->user()->links()
+            ->with('clicks')
             ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','clicks_count')
             ->orderByDesc('created_at')
             ->get();

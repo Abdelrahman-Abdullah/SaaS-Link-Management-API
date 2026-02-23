@@ -20,7 +20,8 @@ class ShortLinkResource extends JsonResource
             'short_code' => $this->short_code,
             'title' => $this->title,
             'custom_alias' => $this->custom_alias,
-            'clicks_count' => $this->clicks_count
+            'clicks_count' => $this->clicks_count ?? 0,
+            'visits' => $this->whenLoaded('clicks', ClickResource::collection($this->clicks)),
         ];
     }
 }
