@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\RedirectController;
@@ -19,6 +20,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/generate', 'store');
         Route::delete('/delete-link/{id}', 'destroy');
         Route::post('/toggle-link/{id}', 'toggleLinkStatus');
+    });
+
+    Route::controller(AnalyticsController::class)->group(function () {
+        Route::get('/overview', 'overview');
+        Route::get('/clicks-over-time', 'clicksOverTime');
+        Route::get('/links/{id}', 'linkAnalytics');
+        Route::get('/recent-clicks', 'recentClicks');
     });
 });
 
