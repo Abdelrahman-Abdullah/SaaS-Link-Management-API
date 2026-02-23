@@ -75,9 +75,22 @@ class ShortLinkController extends Controller
     }
     public function destroy($id)
     {
-        $link = auth()->user()->links()->findOrFail($id);
-        $link->delete();
-        return response()->json(['message' => 'Link deleted successfully']);
+        try {
+                $link = auth()->user()->links()->find($id);
+                if (!$link) {
+                    return $this->apiResponse(message: 'Link not found', code: 404);
+                }
+                $link->delete();
+                return $this->apiResponse(message: 'Link deleted successfully');
+
+        }catch (\Exception $e){
+            return $this->apiResponse(
+                message: 'An error occurred while deleting the link',
+                status: 'error',
+                code: $e->getCode() ?: 500
+            );
+        }
+
     }
 
     private function generate()

@@ -17,7 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ShortLinkController::class)->group(function () {
         Route::get('/links', 'index');
         Route::post('/generate', 'store');
-        Route::delete('/delete/{id}', 'destroy');
+        Route::delete('/delete-link/{id}', 'destroy');
         Route::post('/toggle-link/{id}', 'toggleLinkStatus');
     });
 });
