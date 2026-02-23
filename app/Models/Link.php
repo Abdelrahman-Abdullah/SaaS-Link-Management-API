@@ -15,7 +15,8 @@ class Link extends Model
         'title',
         'expires_at',
         'is_active',
-        'clicks_count'
+        'clicks_count',
+        'last_status_update'
     ];
 
     public function user()

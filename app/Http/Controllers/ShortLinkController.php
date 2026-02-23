@@ -68,10 +68,10 @@ class ShortLinkController extends Controller
             'last_status_update' => now(),
         ]);
 
-        return response()->json([
-            'message' => 'Link status updated successfully',
-            'is_active' => $link->is_active ? 'active' : 'inactive'
-        ]);
+        return $this->apiResponse(
+            data: ['is_active' => $link->is_active ? 'active' : 'inactive'],
+            message: 'Link status updated successfully'
+        );
     }
     public function destroy($id)
     {
