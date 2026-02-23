@@ -18,6 +18,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/links', 'index');
         Route::post('/generate', 'store');
         Route::delete('/delete/{id}', 'destroy');
+        Route::post('/toggle-link/{id}', 'toggleLinkStatus');
     });
 });
 

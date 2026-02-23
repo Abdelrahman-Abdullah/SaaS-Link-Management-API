@@ -16,6 +16,7 @@ class ShortLinkResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'is_active' => $this->is_active ? 'active' : 'inactive',
             'original_link' => $this->original_url,
             'short_code' => $this->short_code,
             'title' => $this->title,

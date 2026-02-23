@@ -14,7 +14,7 @@ class ShortLinkController extends Controller
     {
         $links = auth()->user()->links()
             ->with('clicks')
-            ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','clicks_count')
+            ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','clicks_count','is_active')
             ->orderByDesc('created_at')
             ->get();
 
@@ -53,6 +53,26 @@ class ShortLinkController extends Controller
 
     }
 
+    public function toggleLinkStatus($id)
+    {
+        $link = auth()->user()->links()->find($id);
+        if (!$link) {
+            return $this->apiResponse(message: 'Link not found', code: 404);
+        }
+        if ($link->last_status_update && now()->diffInDays($link->last_status_update) < 2)
+        {
+            return $this->apiResponse(message: 'You can only toggle the link status once every 2 days', code: 403);
+        }
+        $link->update([
+            'is_active'          => !$link->is_active,
+            'last_status_update' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Link status updated successfully',
+            'is_active' => $link->is_active ? 'active' : 'inactive'
+        ]);
+    }
     public function destroy($id)
     {
         $link = auth()->user()->links()->findOrFail($id);
