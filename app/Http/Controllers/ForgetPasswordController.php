@@ -32,7 +32,7 @@ class ForgetPasswordController extends Controller
 
             $this->saveResetCode($email, $code);
 
-            Mail::to('sociala988@gmail.com')->send(new ResetPasswordMailer($code));
+            Mail::to($email)->send(new ResetPasswordMailer($code));
 
             return $this->apiResponse(
                 message: 'Password reset code sent to your email.',
