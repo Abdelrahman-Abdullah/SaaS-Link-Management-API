@@ -16,6 +16,20 @@ class AnalyticsController extends Controller
          */
         $user = $request->user();
         $totalLinks = $user->links()->withCount('clicks')->get();
+        if ($totalLinks->isEmpty()) {
+            return $this->apiResponse(
+                data: [
+                    'total_links'          => 0,
+                    'active_links'         => 0,
+                    'inactive_links'       => 0,
+                    'total_clicks'         => 0,
+                    'unique_clicks'        => 0,
+                    'best_performing_link' => null,
+                ],
+                message: 'No links found',
+                code: 404
+            );
+        }
         $userBestLink = $totalLinks->sortByDesc('clicks_count')->first();
         return $this->apiResponse(
             data: [
@@ -48,7 +62,13 @@ class AnalyticsController extends Controller
             'year' => now()->subDays(365),
             default => now()->subDays(7),
         };
-        $userLinksId = auth()->user()->links()->pluck('id');
+        $userLinksId = auth()->user()->links()->pluck('id'); // Return a collection of link IDs
+        if ($userLinksId->isEmpty()) {
+            return $this->apiResponse(
+                data: ['period' => $period, 'clicks_over_time' => []],
+                message: 'No links found',code: 404
+            );
+        }
         $clickData = Click::whereIn('link_id', $userLinksId)
             ->where('created_at', '>=', $startDate)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as clicks')
@@ -72,9 +92,26 @@ class AnalyticsController extends Controller
      */
     public function linkAnalytics($id)
     {
-        $link = auth()->user()->links()->find($id);
+        $link = auth()->user()->links()->withCount('clicks')->find($id);
         if (!$link) {
-            return $this->apiResponse(message: 'Link not found', status: 404);
+            return $this->apiResponse(message: 'Link not found', code: 404);
+        }
+        if ($link->clicks_count === 0) {
+            return $this->apiResponse(
+                data: [
+                    'link' => [
+                        'id'            => $link->id,
+                        'title'         => $link->title,
+                        'short_code'    => $link->short_code,
+                        'original_url'  => $link->original_url,
+                        'is_active'     => $link->is_active,
+                        'total_clicks'  => 0,
+                        'unique_clicks' => 0,
+                    ],
+                    'analytics' => null,
+                ],
+                message: 'No clicks recorded for this link yet'
+            );
         }
         $clicks = Click::where('link_id', $id); // Return a query builder for reuse in analytics
         return $this->apiResponse(
@@ -108,6 +145,12 @@ class AnalyticsController extends Controller
     {
         $limit = $request->query('limit', 10);
         $userLinksId = auth()->user()->links()->pluck('id');
+        if ($userLinksId->isEmpty()) {
+            return $this->apiResponse(
+                message: 'No links found',
+                code: 404
+            );
+        }
         $recentClicks = Click::whereIn('link_id', $userLinksId)
             ->with('link:id,title,short_code')
             ->orderByDesc('created_at')
