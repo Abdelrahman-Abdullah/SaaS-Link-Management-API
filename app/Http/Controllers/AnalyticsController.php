@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Analytics\ClicksOverTimeRequest;
+use App\Http\Requests\Analytics\RecentClicksRequest;
 use App\Models\Click;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponseHelper;
@@ -54,9 +56,9 @@ class AnalyticsController extends Controller
      * GET /analytics/clicks-over-time?period=week|month|year
      * Clicks grouped by day across all user's links
      */
-    public function clicksOverTime(Request $request)
+    public function clicksOverTime(ClicksOverTimeRequest $request)
     {
-        $period = $request->query('period', 'week');
+        $period = $request->validated('period', 'week');
         $startDate = match ($period) {
             'month' => now()->subDays(30),
             'year' => now()->subDays(365),
@@ -141,9 +143,9 @@ class AnalyticsController extends Controller
      * GET /analytics/recent-clicks?limit=10
      * Live feed of most recent clicks across all user's links
      */
-    public function recentClicks(Request $request)
+    public function recentClicks(RecentClicksRequest $request)
     {
-        $limit = $request->query('limit', 10);
+        $limit = $request->validated('limit', 10);
         $userLinksId = auth()->user()->links()->pluck('id');
         if ($userLinksId->isEmpty()) {
             return $this->apiResponse(
