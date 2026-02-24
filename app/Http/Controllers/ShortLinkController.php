@@ -29,7 +29,7 @@ class ShortLinkController extends Controller
     {
         try {
             $validated = $request->validated();
-            $generatingResult = $this->generate();
+            $generatingResult = $this->generate($validated);
 
             $link = auth()->user()->links()->create([
                 'original_url' => $validated['original_url'],
@@ -93,8 +93,14 @@ class ShortLinkController extends Controller
 
     }
 
-    private function generate()
+    private function generate(array $data): array
     {
+        if (!empty($data['custom_alias'])) {
+            return [
+                'short_code' => $data['custom_alias'],
+                'short_url' => url('/' . $data['custom_alias'])
+            ];
+        }
         do {
             $randomString = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, 6);
         } while (Link::where('short_code', $randomString)->exists());
