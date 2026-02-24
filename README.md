@@ -79,6 +79,8 @@ Import the full collection to test all endpoints immediately with real saved res
 
 Set the `base_url` variable in Postman to `http://127.0.0.1:8000` before running requests.
 
+📖 For the full API reference with all request/response examples, see the [API Documentation](./API_DOCUMENTATION.md).
+
 ---
 
 ## 📡 API Endpoints
