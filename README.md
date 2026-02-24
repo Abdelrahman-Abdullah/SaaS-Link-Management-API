@@ -75,7 +75,7 @@ php artisan serve
 
 Import the full collection to test all endpoints immediately with real saved responses.
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://go.postman.co/collection/26232780-bf5cf15b-c976-47a1-8643-0355a2eeeacc?source=collection_link)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://go.postman.co/collection/26232780-bf5cf15b-c976-47a1-8643-0355a2eeeacc?source=https://documenter.getpostman.com/view/26232780/2sBXcGDeya)
 
 Set the `base_url` variable in Postman to `http://127.0.0.1:8000` before running requests.
 
