@@ -1,59 +1,266 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🔗 SaaS Link Management API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust RESTful API built with **Laravel** for generating and managing short links with rich click analytics. Users can generate short URLs, track every click with detailed metadata, and gain insights through a comprehensive analytics system.
 
-## About Laravel
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://go.postman.co/collection/26232780-bf5cf15b-c976-47a1-8643-0355a2eeeacc?source=https://documenter.getpostman.com/view/26232780/2sBXcGDeya)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- 🔐 **Authentication** — Register, login, and logout via Laravel Sanctum
+- 🔑 **Forgot Password** — Full 3-step reset flow (request → verify → reset)
+- 🔗 **Short Link Generation** — Generate unique short codes for any URL with optional custom alias and title
+- 🌍 **Smart Redirection** — Every click is captured and stored with rich metadata
+- 🔄 **Link Status Toggle** — Activate or deactivate links (rate limited to once every 2 days)
+- 👤 **Multi-Tenant** — Each user can only access and manage their own links
+- 📦 **Consistent API Responses** — Unified JSON response structure across all endpoints
+- 📊 **Analytics Dashboard** — Global overview, per-link deep analytics, time trends, period comparisons, and a live clicks feed
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 🛠️ Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Layer | Technology |
+|---|---|
+| Framework | Laravel (PHP) |
+| Authentication | Laravel Sanctum |
+| Database | MySQL |
+| Geo Location | `torann/geoip` |
+| Device Detection | `jenssegers/agent` |
+| API Format | RESTful JSON |
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🚀 Getting Started
 
-### Premium Partners
+### Prerequisites
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- PHP >= 8.1
+- Composer
+- MySQL
 
-## Contributing
+### Installation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+# 1. Clone the repository
+git clone https://github.com/Abdelrahman-Abdullah/SaaS-Link-Management-API.git
+cd SaaS-Link-Management-API
 
-## Code of Conduct
+# 2. Install dependencies
+composer install
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 3. Set up environment
+cp .env.example .env
+php artisan key:generate
 
-## Security Vulnerabilities
+# 4. Configure your database in .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 5. Run migrations
+php artisan migrate
 
-## License
+# 6. Start the server
+php artisan serve
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## 📬 Postman Collection
+
+Import the full collection to test all endpoints immediately with real saved responses.
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://go.postman.co/collection/26232780-bf5cf15b-c976-47a1-8643-0355a2eeeacc?source=collection_link)
+
+Set the `base_url` variable in Postman to `http://127.0.0.1:8000` before running requests.
+
+---
+
+## 📡 API Endpoints
+
+All endpoints are prefixed with `/api`. Protected routes 🔒 require `Authorization: Bearer {token}`.
+
+### 🔑 Auth
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/api/register` | Register a new user | ❌ |
+| `POST` | `/api/login` | Login and receive token | ❌ |
+| `POST` | `/api/logout` | Revoke current token | 🔒 |
+
+### 🔐 Forgot Password
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `POST` | `/api/forgot-password` | Send 6-digit reset code to email | ❌ |
+| `POST` | `/api/forgot-password/verify` | Verify code and receive `verify_token` | ❌ |
+| `POST` | `/api/reset-password` | Set new password using `verify_token` | ❌ |
+
+### 🔗 Links
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/api/links` | List all user's links with visits | 🔒 |
+| `POST` | `/api/generate` | Generate a new short link | 🔒 |
+| `POST` | `/api/toggle-link/{id}` | Toggle link active/inactive | 🔒 |
+| `DELETE` | `/api/delete-link/{id}` | Delete a link | 🔒 |
+
+### 🌍 Redirect
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/{code}` | Redirect to original URL and record click | ❌ |
+
+### 📊 Analytics
+
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| `GET` | `/api/overview` | Global summary across all links | 🔒 |
+| `GET` | `/api/clicks-over-time` | Clicks per day + period comparison | 🔒 |
+| `GET` | `/api/links/{id}` | Deep analytics for a single link | 🔒 |
+| `GET` | `/api/recent-clicks` | Live feed of latest clicks | 🔒 |
+
+---
+
+## 📋 Key Examples
+
+### Generate a Short Link
+```http
+POST /api/generate
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "original_url": "https://google.com",
+  "title": "Google",
+  "custom_alias": "my-google"
+}
+```
+```json
+{
+  "message": "Short link created successfully",
+  "status": "success",
+  "data": {
+    "id": 1,
+    "original_link": "https://google.com",
+    "short_code": "6nBf9w",
+    "title": "Google",
+    "custom_alias": "my-google",
+    "clicks_count": 0,
+    "visits": []
+  }
+}
+```
+
+---
+
+### Clicks Over Time — with Comparison
+```http
+GET /api/clicks-over-time?period=week
+GET /api/clicks-over-time?from=2026-01-01&to=2026-01-31
+```
+```json
+{
+  "data": {
+    "period": "week",
+    "clicks_over_time": [
+      { "date": "2026-02-23", "clicks": 1 },
+      { "date": "2026-02-24", "clicks": 5 }
+    ],
+    "comparison": {
+      "current_total": 6,
+      "previous_total": 3,
+      "growth_percentage": "100%"
+    }
+  }
+}
+```
+
+---
+
+### Analytics Overview
+```http
+GET /api/overview
+Authorization: Bearer {token}
+```
+```json
+{
+  "data": {
+    "total_links": 5,
+    "active_link": 4,
+    "inactive_link": 1,
+    "total_clicks": 120,
+    "best_performing_link": { "title": "Google", "clicks": 80 },
+    "top_five_links": [...],
+    "peak_hours": [{ "hour": 14, "total": 45 }],
+    "top_referrers": [{ "referrer": "google.com", "total": 30 }]
+  }
+}
+```
+
+---
+
+## 🗂️ Project Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── AuthController.php
+│   │   ├── ForgetPasswordController.php
+│   │   ├── RedirectController.php
+│   │   ├── ShortLinkController.php
+│   │   └── AnalyticsController.php
+│   ├── Requests/
+│   │   ├── Analytics/
+│   │   │   ├── ClicksOverTimeRequest.php
+│   │   │   └── RecentClicksRequest.php
+│   │   └── ShortLikeGenerateRequest.php
+│   └── Resources/
+│       └── ShortLinkResource.php
+├── Models/
+│   ├── User.php
+│   ├── Link.php
+│   └── Click.php
+├── Helpers/
+│   └── ApiResponseHelper.php
+database/
+└── migrations/
+    ├── create_users_table.php
+    ├── create_links_table.php
+    └── create_clicks_table.php
+routes/
+└── api.php
+```
+
+---
+
+## 🔒 Security & Rate Limiting
+
+- All link and analytics operations are **scoped to the authenticated user** — users cannot access each other's data.
+- Link status toggle is **rate limited to once every 2 days** per link.
+- Analytics query inputs (`period`, `limit`, `from`, `to`) are validated via dedicated Form Requests to prevent invalid or abusive values.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please fork the repository and open a pull request with a clear description of your changes.
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## 👨‍💻 Author
+
+**Abdelrahman Abdullah**
+[GitHub](https://github.com/Abdelrahman-Abdullah)
