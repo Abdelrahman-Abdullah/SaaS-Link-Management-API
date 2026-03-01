@@ -1,6 +1,0 @@
-app = "saas-link-management-api"
-primary_region = "ams"
-
-[http_service]
-  internal_port = 8000
-  force_https = true
