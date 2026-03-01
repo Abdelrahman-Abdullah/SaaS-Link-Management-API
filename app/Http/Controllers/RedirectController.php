@@ -19,6 +19,11 @@ class RedirectController extends Controller
             if (!$link) {
                 return $this->apiResponse(message: 'Link not found', status: 'error', code: 404);
             }
+
+            if (!$link->is_active) {
+                return $this->apiResponse(message: 'This link is currently inactive', status: 'error', code: 403);
+            }
+
         try {
             $this->recordClick($link);
             $link->increment('clicks_count');

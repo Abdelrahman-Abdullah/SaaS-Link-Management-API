@@ -36,7 +36,7 @@ class ForgetPasswordController extends Controller
 
             return $this->apiResponse(
                 message: 'Password reset code sent to your email.',
-                status: 200,
+                code: 200,
             );
         } catch (\Exception $e) {
             Log::error('Password reset failed', [
@@ -46,7 +46,8 @@ class ForgetPasswordController extends Controller
 
             return $this->apiResponse(
                 message: 'Failed to send password reset code. Please try again later.',
-                status: 500,
+                status: 'error',
+                code: 500,
             );
         }
     }
@@ -59,20 +60,22 @@ class ForgetPasswordController extends Controller
         if (!$record) {
             return $this->apiResponse(
                 message: 'No password reset request found for this email.',
-                status: 404,
+                code: 404,
             );
         }
         if ($this->isExpired($record->created_at)) {
             $this->deleteResetCode($email);
             return $this->apiResponse(
                 message: 'This code has expired. Please request a new one.',
-                status: 422,
+                status: 'error',
+                code: 422,
             );
         }
         if (!hash_equals((string)$record->token, (string)$code)) {
             return $this->apiResponse(
                 message: 'Invalid reset code. Please check the code and try again.',
-                status: 422,
+                status:'error',
+                code: 422,
             );
         }
         $verifyToken = $this->markCodeAsVerified($email);
@@ -81,7 +84,7 @@ class ForgetPasswordController extends Controller
                 'verify_token' => $verifyToken,
             ],
             message: 'Code verified successfully. You can now reset your password.',
-            status: 200
+            code: 200
         );
 
     }

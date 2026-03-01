@@ -26,7 +26,8 @@ class AuthController extends Controller
             return $this->apiResponse(
                 data: $e->getMessage(),
                 message: 'User registration failed',
-                status: $e->getCode() ?: 500
+                status: 'error',
+                code: $e->getCode() ?: 500
             );
         }
 
@@ -56,7 +57,8 @@ class AuthController extends Controller
             return $this->apiResponse(
                 data: $e->getMessage(),
                 message: 'something went wrong during login',
-                status: $e->getCode() ?: 500
+                status: 'error',
+                code: $e->getCode() ?: 500
             );
         }
 
@@ -81,10 +83,12 @@ class AuthController extends Controller
             return $this->apiResponse(
                 data: $e->getMessage(),
                 message: 'something went wrong during logout',
-                status: $e->getCode() ?: 500
+                status: 'error',
+                code: $e->getCode() ?: 500
             );
         }
 
     }
 
 }
+

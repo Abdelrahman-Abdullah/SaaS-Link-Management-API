@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\ApiResponseHelper;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Helpers\ApiResponseHelper;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
 class VerifyResetCodeRequest extends FormRequest
 {
     use ApiResponseHelper;
@@ -31,9 +33,11 @@ class VerifyResetCodeRequest extends FormRequest
 
     public function failedValidation(Validator $validator)
     {
-        return $this->apiResponse(
-            message: $validator->errors()->toArray() ?? 'Invalid input data.',
-            status: 422,
+        $response = $this->apiResponse(
+              data: $validator->errors()->toArray(),
+              message: 'Validation failed',
+            code: 422,
         );
+        throw new HttpResponseException($response);
     }
 }

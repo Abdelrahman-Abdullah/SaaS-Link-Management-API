@@ -85,6 +85,7 @@ class AnalyticsController extends Controller
      */
     public function clicksOverTime(ClicksOverTimeRequest $request)
     {
+        $user = $request->user();
         $validatedData = $request->validated();
         if (isset($validatedData['from'] , $validatedData['to']))
         {
@@ -103,10 +104,10 @@ class AnalyticsController extends Controller
             $endDate = now()->endOfDay(); // End of today
         }
 
-        $userLinksId = auth()->user()->links()->pluck('id'); // Return a collection of link IDs
+        $userLinksId = $user->links()->pluck('id'); // Return a collection of link IDs
         if ($userLinksId->isEmpty()) {
             return $this->apiResponse(
-                data: ['period' => $period, 'clicks_over_time' => []],
+                data: ['period' => $periodLabel, 'clicks_over_time' => []],
                 message: 'No links found',code: 404
             );
         }
@@ -173,9 +174,10 @@ class AnalyticsController extends Controller
      * GET /analytics/links/{id}
      * Deep analytics for a single link
      */
-    public function linkAnalytics($id)
+    public function linkAnalytics(Request $request, $id)
     {
-        $link = auth()->user()->links()->withCount('clicks')->find($id);
+        $user = $request->user();
+        $link = $user->links()->withCount('clicks')->find($id);
         if (!$link) {
             return $this->apiResponse(message: 'Link not found', code: 404);
         }
@@ -228,8 +230,9 @@ class AnalyticsController extends Controller
      */
     public function recentClicks(RecentClicksRequest $request)
     {
+        $user = $request->user();
         $limit = $request->validated('limit', 10);
-        $userLinksId = auth()->user()->links()->pluck('id');
+        $userLinksId = $user->links()->pluck('id');
         if ($userLinksId->isEmpty()) {
             return $this->apiResponse(
                 message: 'No links found',
