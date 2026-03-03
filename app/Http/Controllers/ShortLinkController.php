@@ -14,7 +14,7 @@ class ShortLinkController extends Controller
     {
         $links = auth()->user()->links()
             ->with('clicks')
-            ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','clicks_count','is_active')
+            ->select('id', 'original_url', 'short_code', 'custom_alias', 'title','is_active')
             ->orderByDesc('created_at')
             ->get();
 
