@@ -14,7 +14,9 @@ class RedirectController extends Controller
     public function redirect($code)
     {
 
-            $link = Link::where('short_code', $code)->first();
+            $link = Link::where('short_code', $code)
+                ->select('id', 'original_url', 'is_active')
+                ->first();
 
             if (!$link) {
                 return $this->apiResponse(message: 'Link not found', status: 'error', code: 404);
