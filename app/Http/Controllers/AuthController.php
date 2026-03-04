@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponseHelper;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\SessionRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Helpers\ApiResponseHelper;
 
 class AuthController extends Controller
 {
