@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Link extends Model
 {
+    use HasFactory;
+
     protected $table = 'links';
     protected $fillable = [
         'user_id',
@@ -13,9 +16,7 @@ class Link extends Model
         'short_code',
         'custom_alias',
         'title',
-        'expires_at',
         'is_active',
-        'clicks_count',
         'last_status_update'
     ];
 

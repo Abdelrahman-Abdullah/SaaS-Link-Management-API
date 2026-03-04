@@ -19,7 +19,6 @@ return new class extends Migration
             $table->integer('clicks')->default(0);
             $table->string('custom_alias', 100)->nullable()->unique();
             $table->string('title')->nullable();
-            $table->integer('clicks_count')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
